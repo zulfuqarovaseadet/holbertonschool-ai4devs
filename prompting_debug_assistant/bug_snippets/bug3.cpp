@@ -1,73 +1,47 @@
-class UniversityManagement:
-    def __init__(self, name):
-        self.uni_name = name
-        self.students = ["Ali", "Leyla", "Murad", "Səbinə"]
-        self.grades = {"Ali": 85, "Leyla": 92, "Murad": 78}
+#include <iostream>
+#include <string>
 
-    def show_all_students(self):
-        print(f"{self.uni_name} tələbələri:")
-        for i in range(len(self.students) + 1):
-            print(f"{i}. {self.students[i]}")
+class InventoryManager {
+public:
+    InventoryManager(int size) {
+        // Bug 1: Manual memory allocation without a proper destructor
+        prices = new double[size];
+        capacity = size;
+        std::cout << "Inventory initialized." << std::endl;
+    }
 
-    def add_new_student(self, name, grade):
-        if name not in self.students:
-            self.students.append(name)
-            self.grades[name] = grade
-            print(name + " bazaya əlavə edildi.")
-        else:
-            print("Bu tələbə artıq qeydiyyatdadır.")
+    void addPrice(int index, double price) {
+        // Bug 2: Out-of-bounds access (using <= instead of <)
+        if (index <= capacity) {
+            prices[index] = price;
+            std::cout << "Price added at index " << index << std::endl;
+        }
+    }
 
-    def update_grade(self, name, new_grade):
-        if name in self.grades:
-            self.grades[name] = new_grade
-            print(f"{name} üçün yeni bal: {new_grade}")
-        
-        if new_grade > "90":
-            print("Əla nəticə!")
-            is_excellent = True
-        
-        if is_excellent:
-            print("Tələbə fəxri fərmana namizəddir.")
+    double getAverage() {
+        double sum = 0;
+        // Bug 3: Logic error - potential division by zero
+        for (int i = 0; i < capacity; i++) {
+            sum += prices[i];
+        }
+        return sum / capacity;
+    }
 
-    def calculate_average(self):
-        total_points = 0
-        count = 0
-        for s in self.grades:
-            total_points += self.grades[s]
-            count += 1
-        
-        if count > 0:
-            avg = total_points / count
-        
-        print("Universitet üzrə orta bal: " + avg)
+    // Missing destructor: Bug 4 - Memory Leak!
 
-    def generate_report(self):
-        print("Hesabat hazırlanır...")
-        print("Statistikalar toplanır...")
-        print("Fayl yaradılır...")
-        
-        report_status = "Hazırdır"
-        if report_status = "Hazırdır":
-            print("Hesabat uğurla tamamlandı.")
-        
-        print("Sistemdən çıxış edilir...")
-        return True
+private:
+    double* prices;
+    int capacity;
+};
 
-    def security_check(self, access_code):
-        if access_code == 1234:
-            print("Giriş uğurludur.")
-        else:
-            print("Səhv kod!")
-        
-        for x in range(5):
-            print("Yoxlanılır: " + str(x))
-        
-        print("Bütün yoxlamalar başa çatdı.")
+int main() {
+    std::cout << "--- Startup Inventory System ---" << std::endl;
+    InventoryManager* myShop = new InventoryManager(5);
+    
+    myShop->addPrice(0, 10.5);
+    myShop->addPrice(5, 100.0); // Triggers Bug 2 (Crash)
 
-uni = UniversityManagement("Texniki Universitet")
-uni.show_all_students()
-uni.add_new_student("Zülfüqar", 95)
-uni.update_grade("Ali", 91)
-uni.calculate_average()
-uni.generate_report()
-uni.security_check(1234)
+    std::cout << "Average price: " << myShop->getAverage() << std::endl;
+    
+    return 0;
+}

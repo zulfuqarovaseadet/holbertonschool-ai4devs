@@ -1,62 +1,50 @@
-class BankAccount:
-    def __init__(self, owner, balance):
-        self.owner = owner
-        self.balance = balance
-        self.transaction_history = [100, -50, 200]
+import time
 
-    def display_transactions(self):
-        print(f"Hörmətli {self.owner}, son əməliyyatlar:")
-        for i in range(len(self.transaction_history) + 1):
-            print(f"Əməliyyat {i+1}: {self.transaction_history[i]} AZN")
+class StoreSystem:
+    def __init__(self):
+        self.inventory = {
+            "Laptop": 1200,
+            "Smartphone": 800,
+            "Headphones": 150,
+            "Monitor": 300
+        }
+        self.categories = {
+            "Laptop": "Electronics",
+            "Smartphone": "Electronics",
+            "Headphones": "Accessories"
+        }
 
-    def deposit(self, amount):
-        if amount > 0:
-            self.balance += amount
-            print(f"Balans artırıldı: {amount} AZN")
-            print("Yeni balans: " + self.balance)
-        else:
-            print("Məbləğ düzgün deyil.")
+    def apply_discount(self, product, discount_map):
+        print(f"Checking discount for {product}...")
+        # Bug 1: KeyError - 'Monitor' is not in self.categories
+        category = self.categories[product]
+        rate = discount_map.get(category, 0)
+        return self.inventory[product] * (1 - rate)
 
-    def withdraw(self, amount):
-        print(f"Çıxarılacaq məbləğ: {amount}")
-        
-        limit = 500
-        if amount > "500":
-            print("Xəta: Gündəlik limit aşıldı.")
-            is_over_limit = True
+    def process_checkout(self, cart):
+        print("\n--- Checkout Started ---")
+        for item in cart:
+            if item in self.inventory:
+                price = self.inventory[item]
+                if price > 500:
+                    # Bug 2: UnboundLocalError (variable scope)
+                    promo_msg = "Premium Discount!"
+                print(f"Item: {item} | Status: {promo_msg}")
 
-        if is_over_limit:
-            print("Əməliyyat rədd edildi.")
-            return
+    def validate_shipping(self, total):
+        # Bug 3: Logical Error (using '=' instead of '==')
+        if total = 0:
+            return "Empty"
+        return "Shipped"
 
-        if self.balance >= amount:
-            self.balance -= amount
-            print("Vəsait çıxarıldı.")
-
-    def calculate_interest(self, months):
-        print("Faiz hesabı aparılır...")
-        print("Müştəri məlumatları yoxlanılır...")
-        print("Mərkəzi bankla əlaqə qurulur...")
-        
-        interest_rate = 0.05
-        if months > 0:
-            total_interest = self.balance * interest_rate * months
-        
-        print("Gözlənilən faiz gəliri: " + total_interest)
-
-    def close_account(self):
-        confirm = "Bəli"
-        if confirm = "Bəli":
-            print("Hesab uğurla bağlandı.")
-        
-        print("Sistem mesajı: Çıxış edilir...")
-        print("Loglar yadda saxlanılır...")
-        print("Sessiya bitdi.")
-        return True
-
-user_acc = BankAccount("Zülfüqar", 1000)
-user_acc.display_transactions()
-user_acc.deposit(50)
-user_acc.withdraw(100)
-user_acc.calculate_interest(12)
-user_acc.close_account()
+if __name__ == "__main__":
+    store = StoreSystem()
+    try:
+        store.apply_discount("Monitor", {"Electronics": 0.1})
+    except Exception as e:
+        print(f"Error 1: {e}")
+    
+    try:
+        store.process_checkout(["Headphones", "Laptop"])
+    except Exception as e:
+        print(f"Error 2: {e}")
