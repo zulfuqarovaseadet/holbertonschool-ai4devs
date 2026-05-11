@@ -1,9 +1,19 @@
 #include <iostream>
-#include <vector>
 
 int main() {
-    std::vector<int> v = {10, 20, 30};
-    // Xəta: v.at(10) mövcud deyil, proqram "std::out_of_range" xətası verəcək.
-    std::cout << v.at(10) << std::endl; 
+    int scores[3] = {10, 20, 30};
+    int total = 0;
+
+    for (int i = 0; i <= 3; i++) {
+        total += scores[i];
+    }
+
+    int* ptr;
+    if (total > 50) {
+        *ptr = total;
+    }
+
+    std::cout << "Nəticə: " << *ptr << std::endl;
+
     return 0;
 }
